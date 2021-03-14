@@ -10,9 +10,10 @@ import { sign } from 'jsonwebtoken';
 import { JwtPayload } from './jwt.strategy';
 import * as dotenv from 'dotenv';
 import { GetUserResponse } from 'src/interfaces/user';
-import { resourceLimits } from 'node:worker_threads';
 dotenv.config();
 
+const mode =
+  process.env.NODE_ENV === 'production' ? process.env.NODE_ENV : 'development';
 @Injectable()
 export class AuthService {
   constructor(
@@ -58,6 +59,11 @@ export class AuthService {
 
   async login(req: AuthLoginDto, res: Response): Promise<any> {
     try {
+      console.log(
+        'which mode',
+        mode === 'development' ? 'localhost' : process.env.DOMAIN,
+      );
+
       const user = await this.userModel.findOne({
         email: req.email,
         pwdHash: hashPassword(req.password),
@@ -72,7 +78,7 @@ export class AuthService {
       return res
         .cookie('jwt', token.accessToken, {
           secure: false,
-          domain: 'localhost',
+          domain: mode === 'development' ? 'localhost' : process.env.DOMAIN,
           httpOnly: true,
           maxAge: Date.now() + token.expiresIn,
         })
@@ -91,7 +97,7 @@ export class AuthService {
 
       res.clearCookie('jwt', {
         secure: false,
-        domain: 'localhost',
+        domain: mode === 'development' ? 'localhost' : process.env.DOMAIN,
         httpOnly: true,
       });
 

@@ -7,6 +7,8 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  console.log('MODE', process.env.NODE_ENV);
+
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
