@@ -59,11 +59,6 @@ export class AuthService {
 
   async login(req: AuthLoginDto, res: Response): Promise<any> {
     try {
-      console.log(
-        'which mode',
-        mode === 'development' ? 'localhost' : process.env.DOMAIN,
-      );
-
       const user = await this.userModel.findOne({
         email: req.email,
         pwdHash: hashPassword(req.password),
@@ -92,8 +87,6 @@ export class AuthService {
     try {
       user.currentTokenId = null;
       await user.save();
-
-      console.log(user);
 
       res.clearCookie('jwt', {
         secure: false,
