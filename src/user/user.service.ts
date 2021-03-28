@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { GetUserResponse, RegisterUserResponse } from 'src/interfaces/user';
 import { User } from 'src/interfaces/user.schema';
 import { hashPassword } from 'src/utils/hashPassword';
+import { GetUserDto } from './dto/get-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class UserService {
     private userModel: Model<User>,
   ) {}
 
-  private filter(user: User): GetUserResponse {
+  private filter(user: User): GetUserDto {
     const { role, email, name, lastName } = user;
 
     return { email, role, name, lastName };
@@ -32,22 +33,22 @@ export class UserService {
 
       const { _id } = newUser;
 
-      return { id: _id, email };
+      return { ok: true, id: _id, email };
     } catch (e) {
       if (e.errors) {
         const { pwdHash, email } = e.errors;
 
         const { message } = pwdHash || email;
 
-        return { message };
+        return { ok: false, message };
       } else if (e.code === 11000) {
-        return { message: 'Email already registered' };
+        return { ok: false, message: 'Email already registered' };
       }
     }
   }
 
   async getOne(user: User): Promise<GetUserResponse> {
-    return this.filter(user);
+    return { ok: true, user: this.filter(user) };
   }
 
   async getAllUsers(): Promise<null> {

@@ -1,15 +1,17 @@
+import { GetUserDto } from 'src/user/dto/get-user.dto';
+
 export type RegisterUserResponse =
   | {
+      ok: boolean;
       id: string;
       email: string;
     }
   | {
+      ok: boolean;
       message: string;
     };
 
 export type GetUserResponse = {
-  name: string;
-  lastName: string;
-  role: string[];
-  email: string;
+  ok: boolean;
+  user: GetUserDto;
 };

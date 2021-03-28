@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 import { sign } from 'jsonwebtoken';
 import { JwtPayload } from './jwt.strategy';
 import * as dotenv from 'dotenv';
-import { GetUserResponse } from 'src/interfaces/user';
+import { GetUserDto } from 'src/user/dto/get-user.dto';
 dotenv.config();
 
 const mode =
@@ -35,7 +35,7 @@ export class AuthService {
     };
   }
 
-  private filter(user: User): GetUserResponse {
+  private filter(user: User): GetUserDto {
     const { role, email, name, lastName } = user;
 
     return { email, role, name, lastName };
@@ -65,12 +65,15 @@ export class AuthService {
       });
 
       if (!user) {
-        return res.status(401).json({ message: 'Invalid login data!' });
+        return res
+          .status(401)
+          .json({ ok: false, message: 'Invalid login data!' });
       }
 
       const token = await this.createToken(await this.generateToken(user));
 
       return res
+        .status(200)
         .cookie('jwt', token.accessToken, {
           secure: false,
           domain: mode === 'development' ? 'localhost' : process.env.DOMAIN,
@@ -79,7 +82,7 @@ export class AuthService {
         })
         .json({ ok: true, user: this.filter(user) });
     } catch (e) {
-      return res.json({ error: e.message });
+      return res.status(500).json({ ok: false, message: e.message });
     }
   }
 
@@ -94,9 +97,9 @@ export class AuthService {
         httpOnly: true,
       });
 
-      return res.json({ ok: true });
+      return res.status(200).json({ ok: true });
     } catch (e) {
-      return res.json({ error: e.message });
+      return res.status(500).json({ ok: false, message: e.message });
     }
   }
 }
