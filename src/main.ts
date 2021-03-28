@@ -11,7 +11,9 @@ async function bootstrap() {
   // const origin =
   //   mode === 'development' ? 'http://localhost:3001' : process.env.ORIGIN;
 
-  app.enableCors({ origin: process.env.ORIGIN, credentials: true });
+  console.log(process.env.ORIGIN);
+
+  app.enableCors({ origin: true, credentials: true });
   app.use(cookieParser());
 
   await app.listen(process.env.PORT || 3000);
