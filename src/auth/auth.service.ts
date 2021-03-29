@@ -75,10 +75,10 @@ export class AuthService {
       return res
         .status(200)
         .cookie('jwt', token.accessToken, {
-          secure: false,
-          // domain: mode === 'development' ? 'localhost' : process.env.DOMAIN,
+          secure: true,
           domain: process.env.DOMAIN,
           httpOnly: true,
+          sameSite: 'none',
           maxAge: Date.now() + token.expiresIn,
         })
         .json({ ok: true, user: this.filter(user) });
@@ -93,9 +93,9 @@ export class AuthService {
       await user.save();
 
       res.clearCookie('jwt', {
-        secure: false,
-        // domain: mode === 'development' ? 'localhost' : process.env.DOMAIN,
+        secure: true,
         domain: process.env.DOMAIN,
+        sameSite: 'none',
         httpOnly: true,
       });
 
