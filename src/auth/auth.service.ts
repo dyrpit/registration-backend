@@ -12,8 +12,6 @@ import * as dotenv from 'dotenv';
 import { GetUserDto } from 'src/user/dto/get-user.dto';
 dotenv.config();
 
-const mode =
-  process.env.NODE_ENV === 'production' ? process.env.NODE_ENV : 'development';
 @Injectable()
 export class AuthService {
   constructor(

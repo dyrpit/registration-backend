@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { GetUserResponse, RegisterUserResponse } from 'src/interfaces/user';
+import {
+  GetUserResponse,
+  RegisterUserResponse,
+  UpdateUserResponse,
+} from 'src/interfaces/user';
 import { User } from 'src/interfaces/user.schema';
 import { hashPassword } from 'src/utils/hashPassword';
 import { GetUserDto } from './dto/get-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateUserDto } from './dto/update-uder.dto';
 
 @Injectable()
 export class UserService {
@@ -47,11 +52,23 @@ export class UserService {
     }
   }
 
-  async getOne(user: User): Promise<GetUserResponse> {
-    return { ok: true, user: this.filter(user) };
+  async updateUser(
+    user: User,
+    updatedUser: UpdateUserDto,
+  ): Promise<UpdateUserResponse> {
+    try {
+      await this.userModel.updateOne({ _id: user }, updatedUser);
+
+      return {
+        ok: true,
+        user: this.filter(await this.userModel.findById(user._id)),
+      };
+    } catch (e) {
+      return { ok: false, message: 'Update failed' };
+    }
   }
 
-  async getAllUsers(): Promise<null> {
-    return null;
+  async getOne(user: User): Promise<GetUserResponse> {
+    return { ok: true, user: this.filter(user) };
   }
 }

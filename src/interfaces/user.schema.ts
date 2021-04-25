@@ -19,8 +19,8 @@ export class User extends Document {
   @Prop({ default: null })
   currentTokenId: string | null;
 
-  @Prop({ default: [Roles.USER] })
-  role: string[];
+  @Prop({ default: Roles.USER })
+  role: string;
 }
 
 export const UserShema = SchemaFactory.createForClass(User);

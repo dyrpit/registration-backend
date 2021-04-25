@@ -15,3 +15,14 @@ export type GetUserResponse = {
   ok: boolean;
   user: GetUserDto;
 };
+
+export type GetAllUsersResponse = {
+  ok: boolean;
+  users: GetUserDto[];
+};
+
+export type UpdateUserResponse =
+  | GetUserResponse
+  | { ok: boolean; message: string };
+
+export type DeleteUserResponse = { ok: boolean };
